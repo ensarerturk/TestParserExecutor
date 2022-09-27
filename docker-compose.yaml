@@ -22,7 +22,7 @@ services:
         aliases:
           - test-executor
     volumes:
-      - /c/users/mertk/data:/data
+      - /c/users/ensare/data:/data
   jenkins:
     image: jenkins/jenkins:lts
     privileged: true
@@ -48,7 +48,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - /c/users/mertk/postgres:/data
+      - /c/users/ensare/postgres:/data
     networks:
       test-executor-network:
         aliases:
