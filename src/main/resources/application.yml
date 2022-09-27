@@ -1,0 +1,27 @@
+github:
+  token: "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"
+  username: "mertklcrsln"
+  mail: "mertklcrsln@gmail.com"
+
+jenkins:
+  username: "admin"
+  password: "admin"
+  credentials: "ec7c70c8-bd0f-4156-9a1a-c995a1b247c9"
+  url: "http://jenkins:8080"
+
+server:
+  port: 80
+
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/test-executor
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 8
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update

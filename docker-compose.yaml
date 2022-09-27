@@ -1,0 +1,61 @@
+version: "3.7"
+services:
+  test-executor:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    hostname: test-executor
+    container_name: test-executor
+    healthcheck:
+      test: "curl -m 5 --silent --fail --request GET
+        http://localhost:8094/actuator/health | jq --exit-status -n 'inputs | if
+        has(\"status\") then .status==\"UP\" else false end' > /dev/null || exit
+        1"
+      interval: 15s
+      timeout: 4s
+      retries: 15
+    restart: unless-stopped
+    ports:
+      - "2000:80"
+    networks:
+      test-executor-network:
+        aliases:
+          - test-executor
+    volumes:
+      - /c/users/mertk/data:/data
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    ports:
+      - 8080:8080
+      - 50000:50000
+    container_name: jenkins
+    volumes:
+      - ~/jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker:/usr/local/bin/docker
+    networks:
+      test-executor-network:
+        aliases:
+          - jenkins
+  postgres:
+    image: postgres:14.1-alpine
+    container_name: postgreSQL
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - /c/users/mertk/postgres:/data
+    networks:
+      test-executor-network:
+        aliases:
+          - postgres
+networks:
+  test-executor-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.1.0.0/24
